@@ -1,5 +1,6 @@
 from prowler.lib.logger import logger
-from prowler.lib.check.models import Check, Check_Report_OpenNebula
+from prowler.lib.check.models import Check
+from prowler.providers.opennebula.models import Check_Report_OpenNebula
 from prowler.providers.opennebula.services.host.host_client import host_client
 
 class host_is_overloaded(Check):
@@ -9,7 +10,7 @@ class host_is_overloaded(Check):
         for host in host_client.hosts:
             report = Check_Report_OpenNebula(
                 metadata=self.metadata(),
-                resource=host.name,
+                resource=host,
             )
             overloaded = False
             details = []

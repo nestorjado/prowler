@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+from typing import Any, Dict
 from pyone import OneServer
+from prowler.lib.check.models import Check_Report
 from prowler.providers.common.models import ProviderOutputOptions
 from prowler.config.config import output_file_timestamp
 
@@ -31,3 +33,18 @@ class OpennebulaOutputOptions(ProviderOutputOptions):
             self.output_filename = f"prowler-output-{identity.user_name}-{output_file_timestamp}"
         else:
             self.output_filename = arguments.output_filename
+
+class Check_Report_OpenNebula(Check_Report):
+    """Contains the OpenNebula Check's finding information."""
+
+    resource_name: str
+    resource_id: str
+    location: str
+
+    def __init__(self, metadata: Dict, resource: Any) -> None:
+        super().__init__(metadata, resource)
+        self.resource_name = getattr(
+            resource, "name", getattr(resource, "resource_name", "")
+        )
+        self.resource_id = getattr(resource, "id", getattr(resource, "resource_id", ""))
+        self.location = getattr(resource, "location", "")

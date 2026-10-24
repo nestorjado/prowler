@@ -1,5 +1,6 @@
 from prowler.lib.logger import logger
-from prowler.lib.check.models import Check, Check_Report_OpenNebula
+from prowler.lib.check.models import Check
+from prowler.providers.opennebula.models import Check_Report_OpenNebula
 from prowler.providers.opennebula.services.template.template_client import template_client
 
 class template_has_embedded_credentials(Check):
@@ -12,7 +13,7 @@ class template_has_embedded_credentials(Check):
         for template in template_client.templates:
             report = Check_Report_OpenNebula(
                 metadata=self.metadata(),
-                resource=template.name,
+                resource=template,
             )
             embedded_secrets = []
 

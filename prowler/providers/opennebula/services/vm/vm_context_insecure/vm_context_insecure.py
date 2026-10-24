@@ -1,5 +1,6 @@
 from prowler.lib.logger import logger
-from prowler.lib.check.models import Check, Check_Report_OpenNebula
+from prowler.lib.check.models import Check
+from prowler.providers.opennebula.models import Check_Report_OpenNebula
 from prowler.providers.opennebula.services.vm.vm_client import vm_client
 
 class vm_context_insecure(Check):
@@ -12,7 +13,7 @@ class vm_context_insecure(Check):
         for vm in vm_client.vms:
             report = Check_Report_OpenNebula(
                 metadata=self.metadata(),
-                resource=vm.name,
+                resource=vm,
             )
             insecure_secrets = []
 

@@ -3,7 +3,7 @@
   "CheckID": "host_is_overloaded",
   "CheckTitle": "Checks for OpenNebula hosts under heavy resource usage (CPU or memory)",
   "CheckType": [],
-  "ServiceName": "Host",
+  "ServiceName": "host",
   "SubServiceName": "",
   "ResourceIdTemplate": "",
   "Severity": "medium",

@@ -1,5 +1,6 @@
 from prowler.lib.logger import logger
-from prowler.lib.check.models import Check, Check_Report_OpenNebula
+from prowler.lib.check.models import Check
+from prowler.providers.opennebula.models import Check_Report_OpenNebula
 from prowler.providers.opennebula.services.template.template_client import template_client
 
 class template_image_outdated(Check):
@@ -15,7 +16,7 @@ class template_image_outdated(Check):
         for template in template_client.templates:
             report = Check_Report_OpenNebula(
                 metadata=self.metadata(),
-                resource=template.name,
+                resource=template,
             )
             signs_of_legacy = []
 

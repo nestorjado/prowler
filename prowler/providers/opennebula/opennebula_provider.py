@@ -27,7 +27,8 @@ class OpennebulaProvider(Provider):
         self, 
         credentials_file: str = None,
         config_file: str = None,
-        mutelist_content: dict = {},
+        mutelist_path: str = None,
+        mutelist_content: dict = None,
     ):
         """
         Initializes the OpennebulaProvider instance.
@@ -58,7 +59,10 @@ class OpennebulaProvider(Provider):
             )
 
         # Mutelist
-        self._mutelist = mutelist_content
+        self._mutelist = OpennebulaMutelist(
+            mutelist_path=mutelist_path or "",
+            mutelist_content=mutelist_content or {},
+        )
 
         Provider.set_global_provider(self)
 
@@ -84,7 +88,7 @@ class OpennebulaProvider(Provider):
 
     @property
     def mutelist(self):
-        return OpennebulaMutelist(self._mutelist)
+        return self._mutelist
 
     @staticmethod
     def setup_session(
@@ -148,3 +152,42 @@ class OpennebulaProvider(Provider):
             group_id=group_id,
             group_name=group_name
         ) 
+
+    # --- Contrato de proveedor dinamico (Prowler >= 5.4x): sustituye los 'elif' del nucleo ---
+    sdk_only = True  # solo CLI/SDK; no se expone en la Prowler App (API/UI)
+
+    @classmethod
+    def from_cli_args(cls, arguments, fixer_config):
+        return cls(
+            credentials_file=getattr(arguments, "credentials_file", None),
+            config_file=getattr(arguments, "config_file", None),
+            mutelist_path=getattr(arguments, "mutelist_file", None),
+        )
+
+    def get_output_options(self, arguments, bulk_checks_metadata):
+        return OpennebulaOutputOptions(arguments, bulk_checks_metadata, self.identity)
+
+    def get_stdout_detail(self, finding) -> str:
+        return getattr(finding, "location", "") or "global"
+
+    def get_summary_entity(self) -> tuple:
+        return ("OpenNebula user", self.identity.user_name)
+
+    def get_finding_output_data(self, check_output) -> dict:
+        return {
+            "auth_method": "core",
+            "account_uid": self.identity.user_id,
+            "account_name": self.identity.user_name,
+            "resource_name": check_output.resource_name,
+            "resource_uid": check_output.resource_id,
+            "region": "global",
+        }
+
+    def get_html_assessment_summary(self) -> str:
+        return (
+            '<div class="col-md-2"><div class="card"><div class="card-header">'
+            "OpenNebula Assessment Summary</div>"
+            '<ul class="list-group list-group-flush"><li class="list-group-item">'
+            f"<b>User:</b> {self.identity.user_name} (ID {self.identity.user_id})"
+            "</li></ul></div></div>"
+        )

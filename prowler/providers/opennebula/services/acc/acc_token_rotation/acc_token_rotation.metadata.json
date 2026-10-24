@@ -3,7 +3,7 @@
   "CheckID": "acc_token_rotation",
   "CheckTitle": "Checks for non-expiring OpenNebula API tokens",
   "CheckType": [],
-  "ServiceName": "Authentication and Access Control",
+  "ServiceName": "acc",
   "SubServiceName": "",
   "ResourceIdTemplate": "",
   "Severity": "high",

@@ -1,5 +1,6 @@
 from prowler.lib.logger import logger
-from prowler.lib.check.models import Check, Check_Report_OpenNebula
+from prowler.lib.check.models import Check
+from prowler.providers.opennebula.models import Check_Report_OpenNebula
 from prowler.providers.opennebula.services.acc.acc_client import acc_client
 
 
